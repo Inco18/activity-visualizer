@@ -8,6 +8,13 @@ const montserrat = Montserrat({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Activity Visualizer - map",
   description: "All your activities on a map",
+  icons: [
+    {
+      rel: "icon",
+      type: "image/svg",
+      url: "../icon.svg",
+    },
+  ],
 };
 
 export default function RootLayout({
