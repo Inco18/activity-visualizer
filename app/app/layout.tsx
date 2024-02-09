@@ -1,32 +1,7 @@
-import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
-import "../globals.css";
-import Providers from "@/components/Providers";
+import React from "react";
 
-const montserrat = Montserrat({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Activity Visualizer - map",
-  description: "All your activities on a map",
-  icons: [
-    {
-      rel: "icon",
-      type: "image/svg",
-      url: "../icon.svg",
-    },
-  ],
+const AppLayout = (props: { children: React.ReactNode }) => {
+  return <div>{props.children}</div>;
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body className={montserrat.className}>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
-  );
-}
+export default AppLayout;
