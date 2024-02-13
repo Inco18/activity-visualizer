@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const App = () => {
-  return <div>App apge</div>;
+  return <main className="flex-1 h-full p-2">App apge</main>;
 };
 
 export default App;

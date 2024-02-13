@@ -1,7 +1,13 @@
 import React from "react";
+import AppNav from "./AppNav";
 
 const AppLayout = (props: { children: React.ReactNode }) => {
-  return <div>{props.children}</div>;
+  return (
+    <div className="flex h-full">
+      <AppNav />
+      {props.children}
+    </div>
+  );
 };
 
 export default AppLayout;
