@@ -3,7 +3,7 @@ import AppNav from "./AppNav";
 
 const AppLayout = (props: { children: React.ReactNode }) => {
   return (
-    <div className="flex h-full">
+    <div className="flex flex-col h-full lg:flex-row">
       <AppNav />
       {props.children}
     </div>
