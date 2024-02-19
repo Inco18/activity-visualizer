@@ -1,5 +1,5 @@
 import React from "react";
-import AppNav from "./AppNav";
+import AppNav from "@/components/app/AppNav";
 
 const AppLayout = (props: { children: React.ReactNode }) => {
   return (

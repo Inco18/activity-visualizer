@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
 import Link from "next/link";
-import Logo from "../../public/logo.svg";
+import Logo from "@/public/logo.svg";
 import { FaChartLine, FaMapLocationDot } from "react-icons/fa6";
 import { IoIosMenu } from "react-icons/io";
 import { usePathname } from "next/navigation";
