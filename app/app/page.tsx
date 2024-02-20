@@ -24,7 +24,7 @@ const App = async () => {
   // const activities = await activitiesRes.json();
   console.log(session);
   return (
-    <main className="flex-1 h-full p-2">
+    <main className="flex-1 flex flex-col lg:flex-row h-full w-full">
       <ActivityList activities={activities} />
     </main>
   );

@@ -6,3 +6,24 @@ html,
 body {
   height: 100%;
 }
+
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  @apply bg-dark-700 rounded-full;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-dark-50;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-material-700;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:active {
+  @apply bg-material-600;
+}
