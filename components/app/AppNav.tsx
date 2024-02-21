@@ -23,7 +23,7 @@ const AppNav = () => {
     <div className="w-full lg:h-full relative lg:w-20 rounded-r-lg">
       <div
         onMouseLeave={() => setProfileOpen(false)}
-        className="lg:bg-dark-800 bg-black lg:rounded-r-lg lg:max-w-20 lg:hover:max-w-64 transition-all lg:absolute z-50 lg:h-full peer border-b-[1px] border-white border-opacity-30 lg:border-0"
+        className="lg:bg-dark-800 bg-black lg:rounded-r-lg lg:max-w-20 lg:hover:max-w-64 transition-all relative lg:absolute z-50 lg:h-full peer border-b-[1px] border-white border-opacity-30 lg:border-0"
       >
         <div className="overflow-x-hidden p-1 lg:p-4 h-full flex lg:flex-col">
           <button

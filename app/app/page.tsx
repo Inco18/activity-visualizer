@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import React from "react";
 import { activities } from "@/placeholderData";
+import MapMain from "@/components/app/map/MapMain";
 
 export const metadata: Metadata = {
   title: "Activity Visualizer - map",
@@ -22,12 +23,7 @@ const App = async () => {
   //   }
   // );
   // const activities = await activitiesRes.json();
-  console.log(session);
-  return (
-    <main className="flex-1 flex flex-col lg:flex-row h-full w-full">
-      <ActivityList activities={activities} />
-    </main>
-  );
+  return <MapMain activities={activities} />;
 };
 
 export default App;
