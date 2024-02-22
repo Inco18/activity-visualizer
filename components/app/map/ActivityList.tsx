@@ -9,7 +9,8 @@ import FiltersModal from "./FiltersModal";
 import { Listbox, Transition } from "@headlessui/react";
 
 type Props = {
-  activities: SummaryActivity[];
+  displayedActivities: SummaryActivity[];
+  allActivities: SummaryActivity[];
   sortBy: SortByType;
   setSortBy: Dispatch<SetStateAction<SortByType>>;
   filters: FiltersType | undefined;
@@ -68,7 +69,8 @@ export const sortOptions: SortByType[] = [
 ];
 
 const ActivityList = ({
-  activities,
+  allActivities,
+  displayedActivities,
   sortBy,
   setSortBy,
   filters,
@@ -124,13 +126,26 @@ const ActivityList = ({
           >
             Show filters
           </button>
+
           <FiltersModal
             isOpen={filtersOpen}
             onClose={() => setFiltersOpen(false)}
+            distanceRange={[
+              Math.floor(
+                allActivities.reduce((acc, cur) => {
+                  return acc < cur.distance ? acc : cur.distance;
+                }, allActivities[0].distance) / 1000
+              ),
+              Math.ceil(
+                allActivities.reduce((acc, cur) => {
+                  return acc > cur.distance ? acc : cur.distance;
+                }, allActivities[0].distance) / 1000
+              ),
+            ]}
           />
         </div>
         <div className="overflow-x-auto lg:overflow-y-auto p-2 flex lg:flex-col flex-row gap-2 scrollbar min-h-fit lg:min-w-fit flex-1 flex-shrink-0">
-          {activities.map((activity) => {
+          {displayedActivities.map((activity) => {
             const icon = getActivityIcon(activity.sport_type);
             return (
               <div

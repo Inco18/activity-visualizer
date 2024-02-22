@@ -31,7 +31,8 @@ const MapMain = ({ activities }: Props) => {
   return (
     <main className="flex-1 flex flex-col lg:flex-row h-full w-full">
       <ActivityList
-        activities={sorted}
+        displayedActivities={sorted}
+        allActivities={data}
         sortBy={sortBy}
         setSortBy={setSortBy}
         filters={filters}
