@@ -3,6 +3,8 @@ import { SummaryActivity } from "@/types/strava/SummaryActivity";
 import React, { useState } from "react";
 import ActivityList, { sortOptions } from "./ActivityList";
 import { sortActivities } from "@/utils/helpers";
+import Map from "./Map";
+import { Console } from "console";
 
 export type SortByType = {
   id: number;
@@ -26,6 +28,7 @@ const MapMain = ({ activities }: Props) => {
   const [data, setData] = useState(activities);
   const [sortBy, setSortBy] = useState<SortByType>(sortOptions[0]);
   const [filters, setFilters] = useState<FiltersType>();
+  const [selected, setSelected] = useState<number>();
   const filtered = data;
   const sorted = sortActivities(filtered, sortBy);
   return (
@@ -37,6 +40,11 @@ const MapMain = ({ activities }: Props) => {
         setSortBy={setSortBy}
         filters={filters}
         setFilters={setFilters}
+      />
+      <Map
+        displayedActivities={sorted}
+        selected={selected}
+        setSelected={setSelected}
       />
     </main>
   );

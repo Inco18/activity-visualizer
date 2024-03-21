@@ -28,8 +28,7 @@ export default function RootLayout({
         className={
           montserrat.className +
           " bg-black text-white h-full flex flex-col relative"
-        }
-      >
+        }>
         <Providers>
           {children}
           <ToastContainer theme="colored" closeOnClick />
