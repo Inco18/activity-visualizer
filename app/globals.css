@@ -28,3 +28,11 @@ body {
 .scrollbar::-webkit-scrollbar-thumb:active {
   @apply bg-material-600;
 }
+
+.leaflet-popup-content-wrapper {
+  @apply bg-dark-900 text-white border-[1px] border-strava !important;
+}
+
+.leaflet-popup-tip {
+  @apply bg-dark-900 border-[1px] border-strava !important;
+}

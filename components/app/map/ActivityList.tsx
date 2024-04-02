@@ -1,7 +1,14 @@
 "use client";
 import { SummaryActivity } from "@/types/strava/SummaryActivity";
 import { getActivityIcon } from "@/utils/getActivityIcon";
-import React, { Dispatch, Fragment, SetStateAction, useState } from "react";
+import React, {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Duration, DateTime } from "luxon";
 import { IoChevronBack } from "react-icons/io5";
 import { FiltersType, SortByType } from "./MapMain";
@@ -15,6 +22,10 @@ type Props = {
   setSortBy: Dispatch<SetStateAction<SortByType>>;
   filters: FiltersType | undefined;
   setFilters: Dispatch<SetStateAction<FiltersType | undefined>>;
+  selected: number | undefined;
+  setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
+  prevSelected: number | undefined;
+  setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
 export const sortOptions: SortByType[] = [
@@ -75,17 +86,28 @@ const ActivityList = ({
   setSortBy,
   filters,
   setFilters,
+  selected,
+  setSelected,
+  prevSelected,
+  setPrevSelected,
 }: Props) => {
   const [isHidden, setIsHidden] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const activityRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  useEffect(() => {
+    if (selected && activityRefs.current[selected]) {
+      activityRefs.current[selected]?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [selected]);
+
   return (
     <div
       className={`h-fit lg:h-full w-full lg:w-fit p-2 pb-0 lg:pr-0 lg:pb-2 flex flex-col lg:flex-row justify-end border-b-[1px] lg:border-r-[1px] lg:border-b-0 border-white border-opacity-30 ${
         isHidden
           ? "max-h-7 lg:max-w-7 lg:max-h-full"
           : "max-h-72 lg:max-w-[20rem] lg:max-h-full"
-      } transition-all duration-500`}
-    >
+      } transition-all duration-500`}>
       <div className="lg:h-full flex flex-col">
         <div className="p-2 py-0 lg:py-2 w-full flex flex-col sm:flex-row lg:flex-col gap-2 z-20">
           <Listbox value={sortBy} onChange={setSortBy}>
@@ -99,8 +121,7 @@ const ActivityList = ({
                   as={Fragment}
                   leave="transition ease-in duration-100"
                   leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
+                  leaveTo="opacity-0">
                   <Listbox.Options className="absolute bg-dark-700 rounded-md z-30 w-full mt-1 overflow-hidden text-sm lg:text-base">
                     {sortOptions.map((option) => (
                       <Listbox.Option
@@ -110,8 +131,7 @@ const ActivityList = ({
                           `p-2 cursor-pointer hover:bg-dark-900 ${
                             selected ? "bg-dark-100" : ""
                           }`
-                        }
-                      >
+                        }>
                         {option.name}
                       </Listbox.Option>
                     ))}
@@ -122,8 +142,7 @@ const ActivityList = ({
           </Listbox>
           <button
             onClick={() => setFiltersOpen(true)}
-            className="bg-dark-700 p-2 rounded-md text-sm lg:text-base text-white hover:bg-dark-300 transition-colors"
-          >
+            className="bg-dark-700 p-2 rounded-md text-sm lg:text-base text-white hover:bg-dark-300 transition-colors">
             Show filters
           </button>
 
@@ -150,8 +169,23 @@ const ActivityList = ({
             return (
               <div
                 key={activity.id}
-                className="border-2 border-white border-opacity-30 rounded-md p-2 hover:border-opacity-100 cursor-pointer flex-shrink-0 max-w-48 lg:max-w-none"
-              >
+                ref={(ref) => {
+                  activityRefs.current[activity.id] = ref;
+                }}
+                onClick={() =>
+                  setSelected((prev) => {
+                    setPrevSelected(prev);
+                    if (prev == activity.id) {
+                      return undefined;
+                    }
+                    return activity.id;
+                  })
+                }
+                className={`border-2 ${
+                  selected == activity.id
+                    ? "border-strava"
+                    : "border-white border-opacity-30"
+                }  rounded-md p-2 hover:border-opacity-100 cursor-pointer flex-shrink-0 max-w-48 lg:max-w-none`}>
                 <div className="flex items-center gap-3">
                   <div className="text-lg lg:text-xl">{icon}</div>
                   <div className="flex flex-col">

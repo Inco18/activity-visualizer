@@ -9,9 +9,17 @@ type Props = {
   displayedActivities: SummaryActivity[];
   selected: number | undefined;
   setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
+  prevSelected: number | undefined;
+  setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
-const Map = ({ displayedActivities, selected, setSelected }: Props) => {
+const Map = ({
+  displayedActivities,
+  selected,
+  setSelected,
+  prevSelected,
+  setPrevSelected,
+}: Props) => {
   return (
     <div className="h-full w-full">
       <MapContainer
@@ -30,6 +38,8 @@ const Map = ({ displayedActivities, selected, setSelected }: Props) => {
             displayedActivities={displayedActivities}
             selected={selected}
             setSelected={setSelected}
+            prevSelected={prevSelected}
+            setPrevSelected={setPrevSelected}
           />
         )}
       </MapContainer>

@@ -1,6 +1,6 @@
 "use client";
 import { SummaryActivity } from "@/types/strava/SummaryActivity";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import ActivityList, { sortOptions } from "./ActivityList";
 import { sortActivities } from "@/utils/helpers";
 import Map from "./Map";
@@ -29,8 +29,9 @@ const MapMain = ({ activities }: Props) => {
   const [sortBy, setSortBy] = useState<SortByType>(sortOptions[0]);
   const [filters, setFilters] = useState<FiltersType>();
   const [selected, setSelected] = useState<number>();
+  const [prevSelected, setPrevSelected] = useState<number>();
   const filtered = data;
-  const sorted = sortActivities(filtered, sortBy);
+  const sorted = useMemo(() => sortActivities(filtered, sortBy), [data]);
   return (
     <main className="flex-1 flex flex-col lg:flex-row h-full w-full">
       <ActivityList
@@ -40,11 +41,17 @@ const MapMain = ({ activities }: Props) => {
         setSortBy={setSortBy}
         filters={filters}
         setFilters={setFilters}
+        selected={selected}
+        setSelected={setSelected}
+        prevSelected={prevSelected}
+        setPrevSelected={setPrevSelected}
       />
       <Map
         displayedActivities={sorted}
         selected={selected}
         setSelected={setSelected}
+        prevSelected={prevSelected}
+        setPrevSelected={setPrevSelected}
       />
     </main>
   );
