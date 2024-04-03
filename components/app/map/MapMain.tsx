@@ -30,6 +30,7 @@ const MapMain = ({ activities }: Props) => {
   const [filters, setFilters] = useState<FiltersType>();
   const [selected, setSelected] = useState<number>();
   const [prevSelected, setPrevSelected] = useState<number>();
+  const [isActivityListHidden, setIsActivityListHidden] = useState(false);
   const filtered = data;
   const sorted = useMemo(() => sortActivities(filtered, sortBy), [data]);
   return (
@@ -45,6 +46,8 @@ const MapMain = ({ activities }: Props) => {
         setSelected={setSelected}
         prevSelected={prevSelected}
         setPrevSelected={setPrevSelected}
+        isHidden={isActivityListHidden}
+        setIsHidden={setIsActivityListHidden}
       />
       <Map
         displayedActivities={sorted}
@@ -52,6 +55,7 @@ const MapMain = ({ activities }: Props) => {
         setSelected={setSelected}
         prevSelected={prevSelected}
         setPrevSelected={setPrevSelected}
+        isActivityListHidden={isActivityListHidden}
       />
     </main>
   );

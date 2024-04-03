@@ -12,6 +12,7 @@ type Props = {
   prevSelected: number | undefined;
   setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
   setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
+  isActivityListHidden: boolean;
 };
 
 const MapInner = ({
@@ -20,6 +21,7 @@ const MapInner = ({
   prevSelected,
   setSelected,
   setPrevSelected,
+  isActivityListHidden,
 }: Props) => {
   const map = useMap();
   const polylineGroup = useRef<any>(null);
@@ -27,6 +29,13 @@ const MapInner = ({
   useEffect(() => {
     map.fitBounds(polylineGroup.current.getBounds());
   }, []);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      map.invalidateSize();
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [isActivityListHidden]);
 
   useEffect(() => {
     console.log(selected, prevSelected);

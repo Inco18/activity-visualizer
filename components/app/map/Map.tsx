@@ -11,6 +11,7 @@ type Props = {
   setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
   prevSelected: number | undefined;
   setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
+  isActivityListHidden: boolean;
 };
 
 const Map = ({
@@ -19,6 +20,7 @@ const Map = ({
   setSelected,
   prevSelected,
   setPrevSelected,
+  isActivityListHidden,
 }: Props) => {
   return (
     <div className="h-full w-full">
@@ -40,6 +42,7 @@ const Map = ({
             setSelected={setSelected}
             prevSelected={prevSelected}
             setPrevSelected={setPrevSelected}
+            isActivityListHidden={isActivityListHidden}
           />
         )}
       </MapContainer>

@@ -26,6 +26,8 @@ type Props = {
   setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
   prevSelected: number | undefined;
   setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
+  isHidden: boolean;
+  setIsHidden: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const sortOptions: SortByType[] = [
@@ -90,8 +92,9 @@ const ActivityList = ({
   setSelected,
   prevSelected,
   setPrevSelected,
+  isHidden,
+  setIsHidden,
 }: Props) => {
-  const [isHidden, setIsHidden] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const activityRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
