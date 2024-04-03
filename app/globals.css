@@ -36,3 +36,7 @@ body {
 .leaflet-popup-tip {
   @apply bg-dark-900 border-[1px] border-strava !important;
 }
+
+.leaflet-popup-content p {
+  margin: 0;
+}

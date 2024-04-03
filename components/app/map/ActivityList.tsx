@@ -97,7 +97,10 @@ const ActivityList = ({
 
   useEffect(() => {
     if (selected && activityRefs.current[selected]) {
-      activityRefs.current[selected]?.scrollIntoView({ behavior: "smooth" });
+      activityRefs.current[selected]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
     }
   }, [selected]);
 
