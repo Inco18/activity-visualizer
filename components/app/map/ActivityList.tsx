@@ -14,6 +14,7 @@ import { IoChevronBack } from "react-icons/io5";
 import { FiltersType, SortByType } from "./MapMain";
 import FiltersModal from "./FiltersModal";
 import { Listbox, Transition } from "@headlessui/react";
+import ActivityListItem from "./ActivityListItem";
 
 type Props = {
   displayedActivities: SummaryActivity[];
@@ -116,7 +117,15 @@ const ActivityList = ({
       } transition-all duration-500`}>
       <div className="lg:h-full flex flex-col">
         <div className="p-2 py-0 lg:py-2 w-full flex flex-col sm:flex-row lg:flex-col gap-2 z-20">
-          <Listbox value={sortBy} onChange={setSortBy}>
+          <Listbox
+            value={sortBy}
+            onChange={(val) => {
+              setSortBy(val);
+              setSelected((prev) => {
+                setPrevSelected(prev);
+                return undefined;
+              });
+            }}>
             <div className="flex flex-col lg:w-full min-w-60">
               <Listbox.Label className="text-sm">Sort by:</Listbox.Label>
               <div className="relative w-full">
@@ -171,69 +180,16 @@ const ActivityList = ({
         </div>
         <div className="overflow-x-auto lg:overflow-y-auto p-2 flex lg:flex-col flex-row gap-2 scrollbar min-h-fit lg:min-w-fit flex-1 flex-shrink-0">
           {displayedActivities.map((activity) => {
-            const icon = getActivityIcon(activity.sport_type);
             return (
-              <div
+              <ActivityListItem
                 key={activity.id}
-                ref={(ref) => {
-                  activityRefs.current[activity.id] = ref;
-                }}
-                onClick={() =>
-                  setSelected((prev) => {
-                    setPrevSelected(prev);
-                    if (prev == activity.id) {
-                      return undefined;
-                    }
-                    return activity.id;
-                  })
-                }
-                className={`border-2 ${
-                  selected == activity.id
-                    ? "border-strava"
-                    : "border-white border-opacity-30"
-                }  rounded-md p-2 hover:border-opacity-100 cursor-pointer flex-shrink-0 max-w-48 lg:max-w-none`}>
-                <div className="flex items-center gap-3">
-                  <div className="text-lg lg:text-xl">{icon}</div>
-                  <div className="flex flex-col">
-                    <p className="font-semibold lg:-mb-1 text-sm lg:text-base line-clamp-1">
-                      {activity.name}
-                    </p>
-                    <p className="text-material-400 text-xs lg:text-sm">
-                      {DateTime.fromISO(activity.start_date_local, {
-                        zone: "utc",
-                      }).toLocaleString(DateTime.DATETIME_SHORT)}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col lg:flex-row lg:gap-2 w-full justify-between">
-                  <div className="flex flex-row lg:flex-col gap-2 lg:gap-0 whitespace-nowrap items-center w-fit">
-                    <p className="text-xs lg:text-sm text-material-400">
-                      Distance
-                    </p>
-                    <p className="text-sm lg:text-base">
-                      {(activity.distance / 1000).toFixed(2)} km
-                    </p>
-                  </div>
-                  <div className="hidden lg:block w-[1px] bg-white opacity-20" />
-                  <div className="flex flex-row lg:flex-col gap-2 lg:gap-0 whitespace-nowrap items-center w-fit">
-                    <p className="text-xs lg:text-sm text-material-400">Time</p>
-                    <p className="text-sm lg:text-base">
-                      {Duration.fromObject({
-                        seconds: activity.elapsed_time,
-                      }).toFormat("hh'h' mm'm'")}
-                    </p>
-                  </div>
-                  <div className="hidden lg:block w-[1px] bg-white opacity-20" />
-                  <div className="flex flex-row lg:flex-col gap-2 lg:gap-0 whitespace-nowrap items-center w-fit">
-                    <p className="text-xs lg:text-sm text-material-400">
-                      Elev gain
-                    </p>
-                    <p className="text-sm lg:text-base">
-                      {activity.total_elevation_gain.toFixed(0)} m
-                    </p>
-                  </div>
-                </div>
-              </div>
+                activityRefs={activityRefs}
+                activity={activity}
+                prevSelected={prevSelected}
+                selected={selected}
+                setPrevSelected={setPrevSelected}
+                setSelected={setSelected}
+              />
             );
           })}
         </div>

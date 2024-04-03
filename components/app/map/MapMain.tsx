@@ -32,7 +32,10 @@ const MapMain = ({ activities }: Props) => {
   const [prevSelected, setPrevSelected] = useState<number>();
   const [isActivityListHidden, setIsActivityListHidden] = useState(false);
   const filtered = data;
-  const sorted = useMemo(() => sortActivities(filtered, sortBy), [data]);
+  const sorted = useMemo(
+    () => sortActivities(filtered, sortBy),
+    [data, sortBy]
+  );
   return (
     <main className="flex-1 flex flex-col lg:flex-row h-full w-full">
       <ActivityList
