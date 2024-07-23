@@ -5,6 +5,8 @@ import polyline from "@mapbox/polyline";
 import { SummaryActivity } from "@/types/strava/SummaryActivity";
 import { DateTime, Duration } from "luxon";
 import { FaArrowDown } from "react-icons/fa";
+import L from "leaflet";
+import GeometryUtil from "leaflet-geometryutil";
 
 type Props = {
   displayedActivities: SummaryActivity[];
@@ -26,8 +28,10 @@ const MapInner = ({
   const map = useMap();
   const polylineGroup = useRef<any>(null);
   const polylineRefs = useRef<{ [key: string]: any }>({});
+  const markersLayerGroup = useMemo(() => L.layerGroup(), [map]);
   useEffect(() => {
     map.fitBounds(polylineGroup.current.getBounds());
+    map.addLayer(markersLayerGroup);
   }, []);
 
   useEffect(() => {
@@ -39,23 +43,46 @@ const MapInner = ({
 
   useEffect(() => {
     console.log(selected, prevSelected);
-    if (selected) {
-      polylineRefs.current[selected].setStyle({
-        color: "#fc4c01",
-        opacity: 1,
-        weight: 5,
-      });
-      polylineRefs.current[selected].bringToFront();
-      map.fitBounds(polylineRefs.current[selected].getBounds());
-    }
+
     if ((prevSelected && !selected) || (prevSelected && selected)) {
       polylineRefs.current[prevSelected].setStyle({
         color: "#991b1b",
         opacity: 0.5,
         weight: 3,
       });
+      markersLayerGroup.clearLayers();
       polylineRefs.current[prevSelected].closePopup();
     }
+    if (selected) {
+      polylineRefs.current[selected].setStyle({
+        color: "#fc4c01",
+        opacity: 1,
+        weight: 5,
+      });
+
+      const activity = displayedActivities.find((el) => el.id == selected);
+      for (let i = 10; i < activity?.distance! / 1000; i += 10) {
+        const markerCoords = GeometryUtil.interpolateOnLine(
+          map,
+          polyline.decode(activity!.map.summary_polyline),
+          (i * 1000) / activity?.distance!
+        )?.latLng;
+        markersLayerGroup.addLayer(
+          L.marker([markerCoords?.lat!, markerCoords?.lng!], {
+            icon: L.divIcon({
+              iconSize: [25, 25],
+              iconAnchor: [12.5, 12.5],
+              className:
+                "bg-dark-800 !flex items-center justify-center border-[1px] border-strava rounded-full !pointer-events-none",
+              html: `${i}`,
+            }),
+          })
+        );
+      }
+      polylineRefs.current[selected].bringToFront();
+      map.fitBounds(polylineRefs.current[selected].getBounds());
+    }
+
     const clickFns = Object.fromEntries(
       Object.entries(polylineRefs.current).map((val: any[]) => {
         const key = val[0];
@@ -93,6 +120,27 @@ const MapInner = ({
     Object.entries(polylineRefs.current).forEach((val: any[]) => {
       if (val[1]) {
         val[1].on("mouseover", (e: any) => {
+          if (!selected) {
+            const activity = displayedActivities.find((el) => el.id == val[0]);
+            for (let i = 10; i < activity?.distance! / 1000; i += 10) {
+              const markerCoords = GeometryUtil.interpolateOnLine(
+                map,
+                polyline.decode(activity!.map.summary_polyline),
+                (i * 1000) / activity?.distance!
+              )?.latLng;
+              markersLayerGroup.addLayer(
+                L.marker([markerCoords?.lat!, markerCoords?.lng!], {
+                  icon: L.divIcon({
+                    iconSize: [25, 25],
+                    iconAnchor: [12.5, 12.5],
+                    className:
+                      "bg-dark-800 !flex items-center justify-center border-[1px] border-strava rounded-full !pointer-events-none",
+                    html: `${i}`,
+                  }),
+                })
+              );
+            }
+          }
           if (val[0] != selected) {
             e.target.bringToFront();
             e.target.setStyle({ color: "#fc4c01", opacity: 1 });
@@ -103,6 +151,7 @@ const MapInner = ({
         });
 
         val[1].on("mouseout", (e: any) => {
+          if (!selected) markersLayerGroup.clearLayers();
           if (val[0] != selected) {
             e.target.setStyle({
               color: "#991b1b",
