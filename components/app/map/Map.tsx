@@ -5,23 +5,24 @@ import "leaflet/dist/leaflet.css";
 import { SummaryActivity } from "@/types/strava/SummaryActivity";
 import polyline from "@mapbox/polyline";
 import MapInner from "./MapInner";
+import { useActivities } from "@/context/ActivitiesContext";
 type Props = {
-  displayedActivities: SummaryActivity[];
-  selected: number | undefined;
-  setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
-  prevSelected: number | undefined;
-  setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
-  isActivityListHidden: boolean;
+  // displayedActivities: SummaryActivity[];
+  // selected: number | undefined;
+  // setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
+  // prevSelected: number | undefined;
+  // setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
+  // isActivityListHidden: boolean;
 };
 
-const Map = ({
-  displayedActivities,
-  selected,
-  setSelected,
-  prevSelected,
-  setPrevSelected,
-  isActivityListHidden,
-}: Props) => {
+const Map = ({}: // displayedActivities,
+// selected,
+// setSelected,
+// prevSelected,
+// setPrevSelected,
+// isActivityListHidden,
+Props) => {
+  const { displayedActivities } = useActivities();
   return (
     <div className="h-full w-full">
       <MapContainer
@@ -37,12 +38,12 @@ const Map = ({
         />
         {displayedActivities.length > 0 && (
           <MapInner
-            displayedActivities={displayedActivities}
-            selected={selected}
-            setSelected={setSelected}
-            prevSelected={prevSelected}
-            setPrevSelected={setPrevSelected}
-            isActivityListHidden={isActivityListHidden}
+          // displayedActivities={displayedActivities}
+          // selected={selected}
+          // setSelected={setSelected}
+          // prevSelected={prevSelected}
+          // setPrevSelected={setPrevSelected}
+          // isActivityListHidden={isActivityListHidden}
           />
         )}
       </MapContainer>

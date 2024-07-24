@@ -15,21 +15,22 @@ import { FiltersType, SortByType } from "./MapMain";
 import FiltersModal from "./FiltersModal";
 import { Listbox, Transition } from "@headlessui/react";
 import ActivityListItem from "./ActivityListItem";
+import { useActivities } from "@/context/ActivitiesContext";
 
-type Props = {
-  displayedActivities: SummaryActivity[];
-  allActivities: SummaryActivity[];
-  sortBy: SortByType;
-  setSortBy: Dispatch<SetStateAction<SortByType>>;
-  filters: FiltersType | undefined;
-  setFilters: Dispatch<SetStateAction<FiltersType | undefined>>;
-  selected: number | undefined;
-  setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
-  prevSelected: number | undefined;
-  setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
-  isHidden: boolean;
-  setIsHidden: React.Dispatch<React.SetStateAction<boolean>>;
-};
+// type Props = {
+//   displayedActivities: SummaryActivity[];
+//   allActivities: SummaryActivity[];
+//   sortBy: SortByType;
+//   setSortBy: Dispatch<SetStateAction<SortByType>>;
+//   filters: FiltersType;
+//   setFilters: React.Dispatch<React.SetStateAction<FiltersType>>;
+//   selected: number | undefined;
+//   setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
+//   prevSelected: number | undefined;
+//   setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
+//   isHidden: boolean;
+//   setIsHidden: React.Dispatch<React.SetStateAction<boolean>>;
+// };
 
 export const sortOptions: SortByType[] = [
   {
@@ -82,36 +83,34 @@ export const sortOptions: SortByType[] = [
   },
 ];
 
-const ActivityList = ({
-  allActivities,
-  displayedActivities,
-  sortBy,
-  setSortBy,
-  filters,
-  setFilters,
-  selected,
-  setSelected,
-  prevSelected,
-  setPrevSelected,
-  isHidden,
-  setIsHidden,
-}: Props) => {
+const ActivityList = () => {
+  const {
+    selectedActivity,
+    setSelectedActivity,
+    setSortBy,
+    sortBy,
+    setPrevSelectedActivity,
+    prevSelectedActivity,
+    isActivityListHidden,
+    displayedActivities,
+    setIsActivityListHidden,
+  } = useActivities();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const activityRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
-    if (selected && activityRefs.current[selected]) {
-      activityRefs.current[selected]?.scrollIntoView({
+    if (selectedActivity && activityRefs.current[selectedActivity]) {
+      activityRefs.current[selectedActivity]?.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
       });
     }
-  }, [selected]);
+  }, [selectedActivity]);
 
   return (
     <div
       className={`h-fit lg:h-full w-full lg:w-fit p-2 pb-0 lg:pr-0 lg:pb-2 flex flex-col lg:flex-row justify-end border-b-[1px] lg:border-r-[1px] lg:border-b-0 border-white border-opacity-30 ${
-        isHidden
+        isActivityListHidden
           ? "max-h-7 lg:max-w-7 lg:max-h-full"
           : "max-h-72 lg:max-w-[20rem] lg:max-h-full"
       } transition-all duration-500`}>
@@ -121,8 +120,8 @@ const ActivityList = ({
             value={sortBy}
             onChange={(val) => {
               setSortBy(val);
-              setSelected((prev) => {
-                setPrevSelected(prev);
+              setSelectedActivity((prev) => {
+                setPrevSelectedActivity(prev);
                 return undefined;
               });
             }}>
@@ -164,18 +163,6 @@ const ActivityList = ({
           <FiltersModal
             isOpen={filtersOpen}
             onClose={() => setFiltersOpen(false)}
-            distanceRange={[
-              Math.floor(
-                allActivities.reduce((acc, cur) => {
-                  return acc < cur.distance ? acc : cur.distance;
-                }, allActivities[0].distance) / 1000
-              ),
-              Math.ceil(
-                allActivities.reduce((acc, cur) => {
-                  return acc > cur.distance ? acc : cur.distance;
-                }, allActivities[0].distance) / 1000
-              ),
-            ]}
           />
         </div>
         <div className="overflow-x-auto lg:overflow-y-auto p-2 flex lg:flex-col flex-row gap-2 scrollbar min-h-fit lg:min-w-fit flex-1 flex-shrink-0">
@@ -185,19 +172,19 @@ const ActivityList = ({
                 key={activity.id}
                 activityRefs={activityRefs}
                 activity={activity}
-                prevSelected={prevSelected}
-                selected={selected}
-                setPrevSelected={setPrevSelected}
-                setSelected={setSelected}
+                prevSelected={prevSelectedActivity}
+                selected={selectedActivity}
+                setPrevSelected={setPrevSelectedActivity}
+                setSelected={setSelectedActivity}
               />
             );
           })}
         </div>
       </div>
       <IoChevronBack
-        onClick={() => setIsHidden((prev) => !prev)}
+        onClick={() => setIsActivityListHidden((prev) => !prev)}
         className={`mx-auto lg:my-auto cursor-pointer min-w-max min-h-max flex-shrink-0 ${
-          isHidden
+          isActivityListHidden
             ? "-rotate-90 lg:rotate-180 text-3xl"
             : "rotate-90 lg:rotate-0 text-xl"
         } transition-all `}

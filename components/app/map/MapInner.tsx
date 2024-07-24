@@ -2,29 +2,21 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { FeatureGroup, Polyline, Popup, useMap } from "react-leaflet";
 import polyline from "@mapbox/polyline";
-import { SummaryActivity } from "@/types/strava/SummaryActivity";
 import { DateTime, Duration } from "luxon";
 import { FaArrowDown } from "react-icons/fa";
 import L from "leaflet";
 import GeometryUtil from "leaflet-geometryutil";
+import { useActivities } from "@/context/ActivitiesContext";
 
-type Props = {
-  displayedActivities: SummaryActivity[];
-  selected: number | undefined;
-  prevSelected: number | undefined;
-  setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
-  setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
-  isActivityListHidden: boolean;
-};
-
-const MapInner = ({
-  displayedActivities,
-  selected,
-  prevSelected,
-  setSelected,
-  setPrevSelected,
-  isActivityListHidden,
-}: Props) => {
+const MapInner = () => {
+  const {
+    displayedActivities,
+    selectedActivity,
+    prevSelectedActivity,
+    setSelectedActivity,
+    setPrevSelectedActivity,
+    isActivityListHidden,
+  } = useActivities();
   const map = useMap();
   const polylineGroup = useRef<any>(null);
   const polylineRefs = useRef<{ [key: string]: any }>({});
@@ -42,25 +34,28 @@ const MapInner = ({
   }, [isActivityListHidden]);
 
   useEffect(() => {
-    console.log(selected, prevSelected);
-
-    if ((prevSelected && !selected) || (prevSelected && selected)) {
-      polylineRefs.current[prevSelected].setStyle({
+    if (
+      (prevSelectedActivity && !selectedActivity) ||
+      (prevSelectedActivity && selectedActivity)
+    ) {
+      polylineRefs.current[prevSelectedActivity].setStyle({
         color: "#991b1b",
         opacity: 0.5,
         weight: 3,
       });
       markersLayerGroup.clearLayers();
-      polylineRefs.current[prevSelected].closePopup();
+      polylineRefs.current[prevSelectedActivity].closePopup();
     }
-    if (selected) {
-      polylineRefs.current[selected].setStyle({
+    if (selectedActivity) {
+      polylineRefs.current[selectedActivity].setStyle({
         color: "#fc4c01",
         opacity: 1,
         weight: 5,
       });
 
-      const activity = displayedActivities.find((el) => el.id == selected);
+      const activity = displayedActivities.find(
+        (el) => el.id == selectedActivity
+      );
       for (let i = 10; i < activity?.distance! / 1000; i += 10) {
         const markerCoords = GeometryUtil.interpolateOnLine(
           map,
@@ -79,25 +74,25 @@ const MapInner = ({
           })
         );
       }
-      polylineRefs.current[selected].bringToFront();
-      map.fitBounds(polylineRefs.current[selected].getBounds());
+      polylineRefs.current[selectedActivity].bringToFront();
+      map.fitBounds(polylineRefs.current[selectedActivity].getBounds());
     }
 
     const clickFns = Object.fromEntries(
       Object.entries(polylineRefs.current).map((val: any[]) => {
         const key = val[0];
         const fn = (e: any) => {
-          if (selected && selected == val[0]) {
+          if (selectedActivity && selectedActivity == val[0]) {
             e.target.setStyle({
               color: "#fc4c01",
               opacity: 1,
               weight: 3,
             });
-            setSelected(undefined);
+            setSelectedActivity(undefined);
             map.closePopup();
           } else {
-            if (selected) {
-              polylineRefs.current[selected].setStyle({
+            if (selectedActivity) {
+              polylineRefs.current[selectedActivity].setStyle({
                 color: "#991b1b",
                 opacity: 0.5,
                 weight: 3,
@@ -109,8 +104,8 @@ const MapInner = ({
               weight: 5,
             });
             e.target.bringToFront();
-            setPrevSelected(selected);
-            setSelected(val[0]);
+            setPrevSelectedActivity(selectedActivity);
+            setSelectedActivity(val[0]);
           }
         };
         return [key, fn];
@@ -120,7 +115,7 @@ const MapInner = ({
     Object.entries(polylineRefs.current).forEach((val: any[]) => {
       if (val[1]) {
         val[1].on("mouseover", (e: any) => {
-          if (!selected) {
+          if (!selectedActivity) {
             const activity = displayedActivities.find((el) => el.id == val[0]);
             for (let i = 10; i < activity?.distance! / 1000; i += 10) {
               const markerCoords = GeometryUtil.interpolateOnLine(
@@ -141,18 +136,18 @@ const MapInner = ({
               );
             }
           }
-          if (val[0] != selected) {
+          if (val[0] != selectedActivity) {
             e.target.bringToFront();
             e.target.setStyle({ color: "#fc4c01", opacity: 1 });
-            if (selected) {
-              polylineRefs.current[selected].bringToFront();
+            if (selectedActivity) {
+              polylineRefs.current[selectedActivity].bringToFront();
             }
           }
         });
 
         val[1].on("mouseout", (e: any) => {
-          if (!selected) markersLayerGroup.clearLayers();
-          if (val[0] != selected) {
+          if (!selectedActivity) markersLayerGroup.clearLayers();
+          if (val[0] != selectedActivity) {
             e.target.setStyle({
               color: "#991b1b",
               opacity: 0.5,
@@ -172,11 +167,11 @@ const MapInner = ({
         }
       });
     };
-  }, [selected]);
+  }, [selectedActivity]);
 
   const displayMap = useMemo(
     () => (
-      <FeatureGroup ref={polylineGroup} key={selected}>
+      <FeatureGroup ref={polylineGroup} key={selectedActivity}>
         {displayedActivities.map((activity) => {
           return (
             <Polyline
