@@ -60,11 +60,38 @@ const ActivitiesProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedActivity, setSelectedActivity] = useState<number>();
   const [prevSelectedActivity, setPrevSelectedActivity] = useState<number>();
   const [isActivityListHidden, setIsActivityListHidden] = useState(false);
-  const filtered = allActivities;
+  // Filter activities
+  const filtered = useMemo(() => {
+    setSelectedActivity(undefined);
+    setPrevSelectedActivity(selectedActivity);
+    return allActivities.filter((activity) => {
+      let bool = true;
+      // Loop through selected filters
+      for (const [key, value] of Object.entries(filters)) {
+        // Handle range filters
+        if (value.to && value.from && activity[key as keyof SummaryActivity]) {
+          const activityValue = activity[key as keyof SummaryActivity];
+          // Handle date filter
+          if (
+            key === "start_date" &&
+            (new Date(new Date(activityValue as string).toDateString()) <
+              new Date(value.from) ||
+              new Date(new Date(activityValue as string).toDateString()) >
+                new Date(value.to))
+          ) {
+            bool = false;
+          }
+        }
+      }
+      return bool;
+    });
+  }, [allActivities, filters]);
+  // Sort activities
   const sorted = useMemo(
     () => sortActivities(filtered, sortBy),
-    [allActivities, sortBy]
+    [filtered, sortBy]
   );
+
   return (
     <ActivitiesContext.Provider
       value={{

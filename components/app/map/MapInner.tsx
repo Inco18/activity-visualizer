@@ -38,13 +38,15 @@ const MapInner = () => {
       (prevSelectedActivity && !selectedActivity) ||
       (prevSelectedActivity && selectedActivity)
     ) {
-      polylineRefs.current[prevSelectedActivity].setStyle({
-        color: "#991b1b",
-        opacity: 0.5,
-        weight: 3,
-      });
+      if (polylineRefs.current[prevSelectedActivity]) {
+        polylineRefs.current[prevSelectedActivity].setStyle({
+          color: "#991b1b",
+          opacity: 0.5,
+          weight: 3,
+        });
+        polylineRefs.current[prevSelectedActivity].closePopup();
+      }
       markersLayerGroup.clearLayers();
-      polylineRefs.current[prevSelectedActivity].closePopup();
     }
     if (selectedActivity) {
       polylineRefs.current[selectedActivity].setStyle({
@@ -167,7 +169,7 @@ const MapInner = () => {
         }
       });
     };
-  }, [selectedActivity]);
+  }, [selectedActivity, displayedActivities]);
 
   const displayMap = useMemo(
     () => (
