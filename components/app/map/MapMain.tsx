@@ -3,8 +3,10 @@ import { SummaryActivity } from "@/types/strava/SummaryActivity";
 import React, { useEffect, useMemo, useState } from "react";
 import ActivityList, { sortOptions } from "./ActivityList";
 import { sortActivities } from "@/utils/helpers";
-import Map from "./Map";
+// import Map from "./Map";
 import { useActivities } from "@/context/ActivitiesContext";
+import dynamic from "next/dynamic";
+import Spinner from "@/components/UI/Spinner";
 
 export type SortByType = {
   id: number;
@@ -25,6 +27,15 @@ type Props = {
   activities: SummaryActivity[];
 };
 
+const Map = dynamic(() => import("./Map"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center w-full h-full">
+      <Spinner />
+    </div>
+  ),
+});
+
 const MapMain = ({ activities }: Props) => {
   const { setAllActivities, allActivities } = useActivities();
   useEffect(() => setAllActivities(activities), [activities]);
@@ -34,7 +45,9 @@ const MapMain = ({ activities }: Props) => {
       <Map />
     </main>
   ) : (
-    <div></div>
+    <div className="flex items-center justify-center w-full h-full">
+      <Spinner />
+    </div>
   );
 };
 
