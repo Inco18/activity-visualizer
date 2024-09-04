@@ -3,8 +3,8 @@ import SignInHeader from "./SignInHeader";
 import SignInForm from "./SignInForm";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import SmallFooter from "@/components/UI/SmallFooter";
+import { authOptions } from "@/utils/authOptions";
 
 const SignIn = async () => {
   const session = await getServerSession(authOptions);
