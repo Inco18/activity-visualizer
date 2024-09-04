@@ -80,7 +80,18 @@ const ActivitiesProvider = ({ children }: { children: React.ReactNode }) => {
                 new Date(value.to))
           ) {
             bool = false;
+          } else if (
+            key === "distance" &&
+            ((activityValue as number) < (value.from as number) * 1000 ||
+              (activityValue as number) > (value.to as number) * 1000)
+          ) {
+            bool = false;
           }
+        }
+
+        if (value.equals && activity[key as keyof SummaryActivity]) {
+          const activityValue = activity[key as keyof SummaryActivity];
+          if (activityValue != value.equals) bool = false;
         }
       }
       return bool;
