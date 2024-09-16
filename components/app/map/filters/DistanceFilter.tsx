@@ -18,9 +18,9 @@ const DistanceFilter = () => {
   ];
 
   return (
-    <div className="flex flex-col flex-1 items-center text-lg min-w-48">
+    <div className="flex flex-col flex-1 items-center justify-center text-lg min-w-48 w-full">
       Distance
-      <div className="pb-5 w-full mt-auto h-fit">
+      <div className="pb-5 mt-auto h-fit w-[90%]">
         <p className="text-center text-sm mb-2">
           {filters.distance?.from || distanceRange[0]} km -{" "}
           {filters.distance?.to || distanceRange[1]} km

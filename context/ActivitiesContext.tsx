@@ -23,6 +23,7 @@ export type FiltersType = {
     from?: string | number;
     to?: string | number;
     equals?: any;
+    includes?: any;
   };
 };
 
@@ -89,9 +90,22 @@ const ActivitiesProvider = ({ children }: { children: React.ReactNode }) => {
           }
         }
 
+        // Handle equals filter
         if (value.equals && activity[key as keyof SummaryActivity]) {
           const activityValue = activity[key as keyof SummaryActivity];
           if (activityValue != value.equals) bool = false;
+        }
+
+        // Handle includes filter
+        if (value.includes && activity[key as keyof SummaryActivity]) {
+          const activityValue = activity[key as keyof SummaryActivity];
+          if (
+            !activityValue
+              ?.toString()
+              .toLowerCase()
+              .includes(value.includes.toString().toLowerCase())
+          )
+            bool = false;
         }
       }
       return bool;

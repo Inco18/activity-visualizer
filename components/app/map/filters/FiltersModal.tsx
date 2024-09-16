@@ -7,6 +7,7 @@ import DateFilter from "./DateFilter";
 import TypeFilter from "./TypeFilter";
 import DistanceFilter from "./DistanceFilter";
 import { useActivities } from "@/context/ActivitiesContext";
+import NameFilter from "./NameFilter";
 
 type Props = {
   isOpen: boolean;
@@ -44,7 +45,7 @@ const FiltersModal = ({ isOpen, onClose }: Props) => {
           leaveFrom="translate-x-0"
           leaveTo="-translate-x-96">
           <div className="fixed left-0 top-0 flex items-center justify-center z-[2000] ">
-            <Dialog.Panel className="bg-dark-700 p-3 rounded-md relative min-w-96">
+            <Dialog.Panel className="bg-dark-700 p-3 rounded-md relative sm:min-w-96">
               <div
                 onClick={handleCloseDiscard}
                 className="absolute right-1 top-1 text-xl hover:bg-dark-900 rounded-full cursor-pointer p-1">
@@ -55,6 +56,7 @@ const FiltersModal = ({ isOpen, onClose }: Props) => {
               </Dialog.Title>
 
               <div className="flex flex-col items-center gap-2">
+                <NameFilter />
                 <DateFilter />
                 <TypeFilter />
                 <DistanceFilter />
