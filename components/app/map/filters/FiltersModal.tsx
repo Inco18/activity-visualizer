@@ -6,6 +6,7 @@ import { IoClose } from "react-icons/io5";
 import DateFilter from "./DateFilter";
 import TypeFilter from "./TypeFilter";
 import DistanceFilter from "./DistanceFilter";
+import { useActivities } from "@/context/ActivitiesContext";
 
 type Props = {
   isOpen: boolean;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const FiltersModal = ({ isOpen, onClose }: Props) => {
+  const { setFilters } = useActivities();
   const handleCloseDiscard = () => {
     onClose();
   };
@@ -56,9 +58,18 @@ const FiltersModal = ({ isOpen, onClose }: Props) => {
                 <DateFilter />
                 <TypeFilter />
                 <DistanceFilter />
-                <button className="bg-strava rounded-md px-7 py-2 hover:bg-opacity-80 transition-all">
-                  Filter
-                </button>
+                <div className="flex gap-2 mt-5">
+                  <button
+                    onClick={handleCloseDiscard}
+                    className="bg-strava rounded-md px-7 py-2 hover:bg-opacity-80 transition-all">
+                    Confirm
+                  </button>
+                  <button
+                    onClick={() => setFilters({})}
+                    className="bg-transparent border-[2px] border-strava rounded-md px-7 py-2 hover:bg-strava transition-all">
+                    Reset
+                  </button>
+                </div>
               </div>
             </Dialog.Panel>
           </div>
