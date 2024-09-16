@@ -12,25 +12,10 @@ import React, {
 import { Duration, DateTime } from "luxon";
 import { IoChevronBack } from "react-icons/io5";
 import { FiltersType, SortByType } from "./MapMain";
-import FiltersModal from "./FiltersModal";
+import FiltersModal from "./filters/FiltersModal";
 import { Listbox, Transition } from "@headlessui/react";
 import ActivityListItem from "./ActivityListItem";
 import { useActivities } from "@/context/ActivitiesContext";
-
-// type Props = {
-//   displayedActivities: SummaryActivity[];
-//   allActivities: SummaryActivity[];
-//   sortBy: SortByType;
-//   setSortBy: Dispatch<SetStateAction<SortByType>>;
-//   filters: FiltersType;
-//   setFilters: React.Dispatch<React.SetStateAction<FiltersType>>;
-//   selected: number | undefined;
-//   setSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
-//   prevSelected: number | undefined;
-//   setPrevSelected: React.Dispatch<React.SetStateAction<number | undefined>>;
-//   isHidden: boolean;
-//   setIsHidden: React.Dispatch<React.SetStateAction<boolean>>;
-// };
 
 export const sortOptions: SortByType[] = [
   {
