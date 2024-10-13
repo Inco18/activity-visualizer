@@ -88,8 +88,10 @@ const ActivitiesProvider = ({ children }: { children: React.ReactNode }) => {
           ) {
             bool = false;
           } else if (
-            (activityValue as number) < (value.from as number) ||
-            (activityValue as number) > (value.to as number)
+            key !== "start_date" &&
+            key !== "distance" &&
+            ((activityValue as number) < (value.from as number) ||
+              (activityValue as number) > (value.to as number))
           ) {
             bool = false;
           }

@@ -1,38 +1,42 @@
 import { useActivities } from "@/context/ActivitiesContext";
+import { SummaryActivity } from "@/types/strava/SummaryActivity";
 import { Duration } from "luxon";
 import Slider from "rc-slider";
 import React from "react";
 
-const ElapsedTimeFilter = () => {
+type Props = {
+  title: string;
+  activityKey: "elapsed_time" | "moving_time";
+};
+
+const TimeFilter = ({ title, activityKey }: Props) => {
   const { filters, setFilters, allActivities } = useActivities();
-  const elapsedTimeRange = [
+  const timeRange = [
     Math.floor(
       allActivities.reduce((acc, cur) => {
-        return acc < cur.elapsed_time ? acc : cur.elapsed_time;
-      }, allActivities[0].elapsed_time)
+        return acc < cur[activityKey] ? acc : cur[activityKey];
+      }, allActivities[0][activityKey])
     ),
     Math.ceil(
       allActivities.reduce((acc, cur) => {
-        return acc > cur.elapsed_time ? acc : cur.elapsed_time;
-      }, allActivities[0].elapsed_time)
+        return acc > cur[activityKey] ? acc : cur[activityKey];
+      }, allActivities[0][activityKey])
     ),
   ];
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center text-lg min-w-48 w-full">
-      Elapsed Time
+      {title}
       <div className="pb-5 mt-auto h-fit w-[90%]">
         <p className="text-center text-sm mb-2">
           {Duration.fromObject({
             seconds:
-              parseInt(filters.elapsed_time?.from as string) ||
-              elapsedTimeRange[0],
+              parseInt(filters[activityKey]?.from as string) || timeRange[0],
           }).toFormat("hh'h' mm'm'")}{" "}
           -{" "}
           {Duration.fromObject({
             seconds:
-              parseInt(filters.elapsed_time?.to as string) ||
-              elapsedTimeRange[1],
+              parseInt(filters[activityKey]?.to as string) || timeRange[1],
           }).toFormat("hh'h' mm'm'")}
         </p>
         <Slider
@@ -41,7 +45,7 @@ const ElapsedTimeFilter = () => {
             setFilters((prev) => {
               return {
                 ...prev,
-                elapsed_time: {
+                [activityKey]: {
                   from: Array.isArray(val) ? val[0] : val,
                   to: Array.isArray(val) ? val[1] : val,
                 },
@@ -49,26 +53,26 @@ const ElapsedTimeFilter = () => {
             })
           }
           value={[
-            (filters.elapsed_time?.from as number) || elapsedTimeRange[0],
-            (filters.elapsed_time?.to as number) || elapsedTimeRange[1],
+            (filters[activityKey]?.from as number) || timeRange[0],
+            (filters[activityKey]?.to as number) || timeRange[1],
           ]}
-          min={elapsedTimeRange[0]}
-          max={elapsedTimeRange[1]}
+          min={timeRange[0]}
+          max={timeRange[1]}
           step={1}
-          defaultValue={elapsedTimeRange}
+          defaultValue={timeRange}
           marks={{
-            [elapsedTimeRange[0]]: {
+            [timeRange[0]]: {
               label: Duration.fromObject({
-                seconds: elapsedTimeRange[0],
+                seconds: timeRange[0],
               }).toFormat("hh'h' mm'm'"),
               style: {
                 color: "white",
                 paddingLeft: "1.3rem",
               },
             },
-            [elapsedTimeRange[1]]: {
+            [timeRange[1]]: {
               label: Duration.fromObject({
-                seconds: elapsedTimeRange[1],
+                seconds: timeRange[1],
               }).toFormat("hh'h' mm'm'"),
               style: {
                 color: "white",
@@ -84,4 +88,4 @@ const ElapsedTimeFilter = () => {
   );
 };
 
-export default ElapsedTimeFilter;
+export default TimeFilter;
