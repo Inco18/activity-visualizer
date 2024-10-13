@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useMemo, useRef } from "react";
-import { FeatureGroup, Polyline, Popup, useMap } from "react-leaflet";
+import { FeatureGroup, Polyline, useMap } from "react-leaflet";
 import polyline from "@mapbox/polyline";
-import { DateTime, Duration } from "luxon";
-import { FaArrowDown } from "react-icons/fa";
-import L from "leaflet";
+import L, { LatLng } from "leaflet";
 import GeometryUtil from "leaflet-geometryutil";
 import { useActivities } from "@/context/ActivitiesContext";
+import { FaChevronUp } from "react-icons/fa";
+import { renderToString } from "react-dom/server";
 
 const MapInner = () => {
   const {
@@ -58,6 +58,31 @@ const MapInner = () => {
       const activity = displayedActivities.find(
         (el) => el.id == selectedActivity
       );
+      for (let i = 1; i < activity?.distance! / 1000; i += 1) {
+        const arrowCoords = GeometryUtil.interpolateOnLine(
+          map,
+          polyline.decode(activity!.map.summary_polyline),
+          (i * 1000) / activity?.distance!
+        );
+        markersLayerGroup.addLayer(
+          L.marker([arrowCoords?.latLng.lat!, arrowCoords?.latLng.lng!], {
+            icon: L.divIcon({
+              iconSize: [25, 25],
+              iconAnchor: [12.5, 12.5],
+              className: `!flex items-center justify-center !pointer-events-none text-orange-400`,
+              html: `<div style="transform:rotate(${Math.round(
+                GeometryUtil.angle(
+                  map,
+                  polyline.decode(activity!.map.summary_polyline)[
+                    arrowCoords?.predecessor as number
+                  ],
+                  arrowCoords?.latLng as LatLng
+                )
+              )}deg);">${renderToString(<FaChevronUp />)}</div>`,
+            }),
+          })
+        );
+      }
       for (let i = 10; i < activity?.distance! / 1000; i += 10) {
         const markerCoords = GeometryUtil.interpolateOnLine(
           map,
@@ -119,6 +144,32 @@ const MapInner = () => {
         val[1].on("mouseover", (e: any) => {
           if (!selectedActivity) {
             const activity = displayedActivities.find((el) => el.id == val[0]);
+            for (let i = 1; i < activity?.distance! / 1000; i += 1) {
+              const arrowCoords = GeometryUtil.interpolateOnLine(
+                map,
+                polyline.decode(activity!.map.summary_polyline),
+                (i * 1000) / activity?.distance!
+              );
+              markersLayerGroup.addLayer(
+                L.marker([arrowCoords?.latLng.lat!, arrowCoords?.latLng.lng!], {
+                  icon: L.divIcon({
+                    iconSize: [25, 25],
+                    iconAnchor: [12.5, 12.5],
+                    className: `!flex items-center justify-center !pointer-events-none text-orange-400`,
+                    html: `<div style="transform:rotate(${Math.round(
+                      GeometryUtil.angle(
+                        map,
+                        polyline.decode(activity!.map.summary_polyline)[
+                          arrowCoords?.predecessor as number
+                        ],
+                        arrowCoords?.latLng as LatLng
+                      )
+                    )}deg);">${renderToString(<FaChevronUp />)}</div>`,
+                  }),
+                })
+              );
+            }
+
             for (let i = 10; i < activity?.distance! / 1000; i += 10) {
               const markerCoords = GeometryUtil.interpolateOnLine(
                 map,
