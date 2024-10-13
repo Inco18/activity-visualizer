@@ -150,7 +150,7 @@ const ActivityList = () => {
             onClose={() => setFiltersOpen(false)}
           />
         </div>
-        <div className="overflow-x-auto lg:overflow-y-auto p-2 flex lg:flex-col flex-row gap-2 scrollbar min-h-fit lg:min-w-fit flex-1 flex-shrink-0">
+        <div className="overflow-x-auto lg:overflow-y-auto p-2 flex lg:flex-col flex-row gap-2 scrollbar min-h-fit lg:min-w-fit lg:min-h-0 flex-1 flex-shrink-0">
           {displayedActivities.map((activity) => {
             return (
               <ActivityListItem
