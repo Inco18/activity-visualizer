@@ -46,7 +46,7 @@ const FiltersModal = ({ isOpen, onClose }: Props) => {
           leaveFrom="translate-x-0"
           leaveTo="-translate-x-96">
           <div className="fixed left-0 top-0 flex items-center justify-center z-[2000] ">
-            <Dialog.Panel className="bg-dark-700 p-3 rounded-md relative sm:min-w-96">
+            <Dialog.Panel className="bg-dark-700 p-3 rounded-md relative sm:min-w-96 w-screen sm:w-auto max-h-screen overflow-y-auto scrollbar overflow-x-clip">
               <div
                 onClick={handleCloseDiscard}
                 className="absolute right-1 top-1 text-xl hover:bg-dark-900 rounded-full cursor-pointer p-1">
