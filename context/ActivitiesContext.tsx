@@ -87,6 +87,11 @@ const ActivitiesProvider = ({ children }: { children: React.ReactNode }) => {
               (activityValue as number) > (value.to as number) * 1000)
           ) {
             bool = false;
+          } else if (
+            (activityValue as number) < (value.from as number) ||
+            (activityValue as number) > (value.to as number)
+          ) {
+            bool = false;
           }
         }
 

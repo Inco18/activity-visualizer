@@ -8,6 +8,7 @@ import TypeFilter from "./TypeFilter";
 import DistanceFilter from "./DistanceFilter";
 import { useActivities } from "@/context/ActivitiesContext";
 import NameFilter from "./NameFilter";
+import ElapsedTimeFilter from "./ElapsedTimeFilter";
 
 type Props = {
   isOpen: boolean;
@@ -60,6 +61,7 @@ const FiltersModal = ({ isOpen, onClose }: Props) => {
                 <DateFilter />
                 <TypeFilter />
                 <DistanceFilter />
+                <ElapsedTimeFilter />
                 <div className="flex gap-2 mt-5">
                   <button
                     onClick={handleCloseDiscard}
