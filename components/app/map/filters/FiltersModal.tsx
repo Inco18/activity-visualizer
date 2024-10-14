@@ -10,6 +10,7 @@ import { useActivities } from "@/context/ActivitiesContext";
 import NameFilter from "./NameFilter";
 import TimeFilter from "./TimeFilter";
 import ElevationFilter from "./ElevationFilter";
+import SpeedFilter from "./SpeedFilter";
 
 type Props = {
   isOpen: boolean;
@@ -65,6 +66,11 @@ const FiltersModal = ({ isOpen, onClose }: Props) => {
                 <TimeFilter title="Elapsed Time" activityKey="elapsed_time" />
                 <TimeFilter title="Moving Time" activityKey="moving_time" />
                 <ElevationFilter />
+                <SpeedFilter
+                  title="Average Speed"
+                  activityKey="average_speed"
+                />
+                <SpeedFilter title="Max Speed" activityKey="max_speed" />
                 <div className="flex gap-2 mt-5">
                   <button
                     onClick={handleCloseDiscard}
