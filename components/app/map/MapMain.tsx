@@ -7,6 +7,7 @@ import { sortActivities } from "@/utils/helpers";
 import { useActivities } from "@/context/ActivitiesContext";
 import dynamic from "next/dynamic";
 import Spinner from "@/components/UI/Spinner";
+import SmallFooter from "@/components/UI/SmallFooter";
 
 export type SortByType = {
   id: number;
@@ -43,6 +44,7 @@ const MapMain = ({ activities }: Props) => {
     <main className="flex-1 flex flex-col lg:flex-row h-full w-full">
       <ActivityList />
       <Map />
+      <SmallFooter bg="bg-dark-800" />
     </main>
   ) : (
     <div className="flex items-center justify-center w-full h-full">

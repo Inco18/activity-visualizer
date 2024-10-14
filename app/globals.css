@@ -45,6 +45,10 @@ body {
   background: #333333 !important; 
 }
 
+.leaflet-right {
+  right: 172px !important;
+}
+
 .loader {
   width: 48px;
   height: 48px;

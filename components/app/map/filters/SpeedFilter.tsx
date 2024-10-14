@@ -24,8 +24,6 @@ const SpeedFilter = ({ title, activityKey }: Props) => {
     ) / 100,
   ];
 
-  console.log(speedRange);
-
   return (
     <div className="flex flex-col flex-1 items-center justify-center text-lg min-w-48 w-full">
       {title}
