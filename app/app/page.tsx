@@ -7,7 +7,7 @@ import MapMain from "@/components/app/map/MapMain";
 import { authOptions } from "@/utils/authOptions";
 
 export const metadata: Metadata = {
-  title: "Activity Visualizer - map",
+  title: "Activity Visualizer - Map",
   description: "All your activities on a map",
 };
 
