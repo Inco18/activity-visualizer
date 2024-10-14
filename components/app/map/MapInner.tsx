@@ -58,35 +58,39 @@ const MapInner = () => {
       const activity = displayedActivities.find(
         (el) => el.id == selectedActivity
       );
+      const decodedPolyline = polyline.decode(activity!.map.summary_polyline);
       for (let i = 1; i < activity?.distance! / 1000; i += 1) {
         const arrowCoords = GeometryUtil.interpolateOnLine(
           map,
-          polyline.decode(activity!.map.summary_polyline),
+          decodedPolyline,
           (i * 1000) / activity?.distance!
         );
-        markersLayerGroup.addLayer(
-          L.marker([arrowCoords?.latLng.lat!, arrowCoords?.latLng.lng!], {
-            icon: L.divIcon({
-              iconSize: [25, 25],
-              iconAnchor: [12.5, 12.5],
-              className: `!flex items-center justify-center !pointer-events-none text-orange-400`,
-              html: `<div style="transform:rotate(${Math.round(
-                GeometryUtil.angle(
-                  map,
-                  polyline.decode(activity!.map.summary_polyline)[
-                    arrowCoords?.predecessor as number
-                  ],
-                  arrowCoords?.latLng as LatLng
-                )
-              )}deg);">${renderToString(<FaChevronUp />)}</div>`,
-            }),
-          })
-        );
+        if (
+          decodedPolyline[arrowCoords?.predecessor as number] &&
+          decodedPolyline[(arrowCoords?.predecessor as number) + 2]
+        ) {
+          markersLayerGroup.addLayer(
+            L.marker([arrowCoords?.latLng.lat!, arrowCoords?.latLng.lng!], {
+              icon: L.divIcon({
+                iconSize: [25, 25],
+                iconAnchor: [12.5, 12.5],
+                className: `!flex items-center justify-center !pointer-events-none text-orange-400`,
+                html: `<div style="transform:rotate(${Math.round(
+                  GeometryUtil.angle(
+                    map,
+                    decodedPolyline[arrowCoords?.predecessor as number],
+                    decodedPolyline[(arrowCoords?.predecessor as number) + 2]
+                  )
+                )}deg);">${renderToString(<FaChevronUp />)}</div>`,
+              }),
+            })
+          );
+        }
       }
       for (let i = 10; i < activity?.distance! / 1000; i += 10) {
         const markerCoords = GeometryUtil.interpolateOnLine(
           map,
-          polyline.decode(activity!.map.summary_polyline),
+          decodedPolyline,
           (i * 1000) / activity?.distance!
         )?.latLng;
         markersLayerGroup.addLayer(
@@ -144,36 +148,47 @@ const MapInner = () => {
         val[1].on("mouseover", (e: any) => {
           if (!selectedActivity) {
             const activity = displayedActivities.find((el) => el.id == val[0]);
+            const decodedPolyline = polyline.decode(
+              activity!.map.summary_polyline
+            );
             for (let i = 1; i < activity?.distance! / 1000; i += 1) {
               const arrowCoords = GeometryUtil.interpolateOnLine(
                 map,
-                polyline.decode(activity!.map.summary_polyline),
+                decodedPolyline,
                 (i * 1000) / activity?.distance!
               );
-              markersLayerGroup.addLayer(
-                L.marker([arrowCoords?.latLng.lat!, arrowCoords?.latLng.lng!], {
-                  icon: L.divIcon({
-                    iconSize: [25, 25],
-                    iconAnchor: [12.5, 12.5],
-                    className: `!flex items-center justify-center !pointer-events-none text-orange-400`,
-                    html: `<div style="transform:rotate(${Math.round(
-                      GeometryUtil.angle(
-                        map,
-                        polyline.decode(activity!.map.summary_polyline)[
-                          arrowCoords?.predecessor as number
-                        ],
-                        arrowCoords?.latLng as LatLng
-                      )
-                    )}deg);">${renderToString(<FaChevronUp />)}</div>`,
-                  }),
-                })
-              );
+              if (
+                decodedPolyline[arrowCoords?.predecessor as number] &&
+                decodedPolyline[(arrowCoords?.predecessor as number) + 2]
+              ) {
+                markersLayerGroup.addLayer(
+                  L.marker(
+                    [arrowCoords?.latLng.lat!, arrowCoords?.latLng.lng!],
+                    {
+                      icon: L.divIcon({
+                        iconSize: [25, 25],
+                        iconAnchor: [12.5, 12.5],
+                        className: `!flex items-center justify-center !pointer-events-none text-orange-400`,
+                        html: `<div style="transform:rotate(${Math.round(
+                          GeometryUtil.angle(
+                            map,
+                            decodedPolyline[arrowCoords?.predecessor as number],
+                            decodedPolyline[
+                              (arrowCoords?.predecessor as number) + 2
+                            ]
+                          )
+                        )}deg);">${renderToString(<FaChevronUp />)}</div>`,
+                      }),
+                    }
+                  )
+                );
+              }
             }
 
             for (let i = 10; i < activity?.distance! / 1000; i += 10) {
               const markerCoords = GeometryUtil.interpolateOnLine(
                 map,
-                polyline.decode(activity!.map.summary_polyline),
+                decodedPolyline,
                 (i * 1000) / activity?.distance!
               )?.latLng;
               markersLayerGroup.addLayer(
