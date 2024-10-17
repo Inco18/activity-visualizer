@@ -5,7 +5,7 @@ import polyline from "@mapbox/polyline";
 import L, { LatLng } from "leaflet";
 import GeometryUtil from "leaflet-geometryutil";
 import { useActivities } from "@/context/ActivitiesContext";
-import { FaChevronUp } from "react-icons/fa";
+import { FaChevronUp, FaFlag, FaFlagCheckered } from "react-icons/fa";
 import { renderToString } from "react-dom/server";
 
 const MapInner = () => {
@@ -24,8 +24,17 @@ const MapInner = () => {
   useEffect(() => {
     map.fitBounds(polylineGroup.current.getBounds());
     map.addLayer(markersLayerGroup);
+    // Hide markers when map is zoomed out
+    map.on("zoomend", () => {
+      if (map.getZoom() < 11) {
+        map.removeLayer(markersLayerGroup);
+      } else {
+        map.addLayer(markersLayerGroup);
+      }
+    });
   }, []);
 
+  // Handle map size change on ActivityList hide
   useEffect(() => {
     const timeout = setTimeout(() => {
       map.invalidateSize();
@@ -59,6 +68,39 @@ const MapInner = () => {
         (el) => el.id == selectedActivity
       );
       const decodedPolyline = polyline.decode(activity!.map.summary_polyline);
+      // Add start and end flags
+      markersLayerGroup.addLayer(
+        L.marker([decodedPolyline[0][0], decodedPolyline[0][1]], {
+          icon: L.divIcon({
+            iconSize: [25, 25],
+            iconAnchor: [12.5, 12.5],
+            className: `text-green-500 !pointer-events-none`,
+            html: `<div style="transform:translate(50%, 0)">${renderToString(
+              <FaFlag />
+            )}</div>`,
+          }),
+        })
+      );
+      markersLayerGroup.addLayer(
+        L.marker(
+          [
+            decodedPolyline[decodedPolyline.length - 1][0],
+            decodedPolyline[decodedPolyline.length - 1][1],
+          ],
+          {
+            icon: L.divIcon({
+              iconSize: [25, 25],
+              iconAnchor: [12.5, 12.5],
+              className: `text-red-500 !pointer-events-none`,
+              html: `<div style="transform:translate(50%, 0)">${renderToString(
+                <FaFlagCheckered />
+              )}</div>`,
+            }),
+          }
+        )
+      );
+
+      // Add direction arrows
       for (let i = 1; i < activity?.distance! / 1000; i += 1) {
         const arrowCoords = GeometryUtil.interpolateOnLine(
           map,
@@ -87,6 +129,8 @@ const MapInner = () => {
           );
         }
       }
+
+      // Add distance markers
       for (let i = 10; i < activity?.distance! / 1000; i += 10) {
         const markerCoords = GeometryUtil.interpolateOnLine(
           map,
@@ -143,6 +187,7 @@ const MapInner = () => {
       })
     );
 
+    // Handle hover
     Object.entries(polylineRefs.current).forEach((val: any[]) => {
       if (val[1]) {
         val[1].on("mouseover", (e: any) => {
@@ -151,6 +196,39 @@ const MapInner = () => {
             const decodedPolyline = polyline.decode(
               activity!.map.summary_polyline
             );
+            // Add start and end flags
+            markersLayerGroup.addLayer(
+              L.marker([decodedPolyline[0][0], decodedPolyline[0][1]], {
+                icon: L.divIcon({
+                  iconSize: [25, 25],
+                  iconAnchor: [12.5, 12.5],
+                  className: `text-green-500 !pointer-events-none`,
+                  html: `<div style="transform:translate(50%, 0)">${renderToString(
+                    <FaFlag />
+                  )}</div>`,
+                }),
+              })
+            );
+            markersLayerGroup.addLayer(
+              L.marker(
+                [
+                  decodedPolyline[decodedPolyline.length - 1][0],
+                  decodedPolyline[decodedPolyline.length - 1][1],
+                ],
+                {
+                  icon: L.divIcon({
+                    iconSize: [25, 25],
+                    iconAnchor: [12.5, 12.5],
+                    className: `text-red-500 !pointer-events-none`,
+                    html: `<div style="transform:translate(50%, 0)">${renderToString(
+                      <FaFlagCheckered />
+                    )}</div>`,
+                  }),
+                }
+              )
+            );
+
+            // Add direction arrows
             for (let i = 1; i < activity?.distance! / 1000; i += 1) {
               const arrowCoords = GeometryUtil.interpolateOnLine(
                 map,
@@ -185,6 +263,7 @@ const MapInner = () => {
               }
             }
 
+            // Add distance markers
             for (let i = 10; i < activity?.distance! / 1000; i += 10) {
               const markerCoords = GeometryUtil.interpolateOnLine(
                 map,
