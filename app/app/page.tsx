@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 const App = async () => {
   const session = await getServerSession(authOptions);
   const activitiesRes = await fetch(
-    "https://www.strava.com/api/v3/athlete/activities",
+    "https://www.strava.com/api/v3/athlete/activities?page=1&per_page=200",
     {
-      next: { revalidate: 60 * 60 },
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${session?.access_token}`,
       },
