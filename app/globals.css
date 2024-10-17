@@ -8,6 +8,10 @@ body {
   color-scheme: dark;
 }
 
+.rc-slider-dot-active {
+  @apply !bg-strava !border-strava
+}
+
 .scrollbar::-webkit-scrollbar {
   width: 8px;
   height: 8px;
